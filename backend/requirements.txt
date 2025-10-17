@@ -1,0 +1,8 @@
+fastapi
+strawberry-graphql[fastapi]
+strawberry
+sqlalchemy
+pandas
+python-dateutil
+email-validator
+phonenumbers
