@@ -22,6 +22,7 @@ const Appointments: React.FC = () => {
     dob: string;
     email: string;
     phone: string;
+    address: string;
     appointments: Appointment[];
     }
 
@@ -49,12 +50,12 @@ const Appointments: React.FC = () => {
             {!error && (
                 <div>
                     <Box sx={{ p: 2 }}>
-                        <Typography>{data?.patient?.id}</Typography>
-                        <Typography>{data?.patient?.firstName}</Typography>
-                        <Typography>{data?.patient?.lastName}</Typography>
-                        <Typography>{data?.patient?.dob}</Typography>
-                        <Typography>{data?.patient?.email}</Typography>
-                        <Typography>{data?.patient?.phone}</Typography>
+                        <Typography><strong>ID:</strong> {data?.patient?.id}</Typography>
+                        <Typography><strong>Name:</strong> {data?.patient?.firstName} {data?.patient?.lastName}</Typography>
+                        <Typography><strong>Date of Birth:</strong> {data?.patient?.dob}</Typography>
+                        <Typography><strong>Email:</strong> {data?.patient?.email}</Typography>
+                        <Typography><strong>Phone:</strong> {data?.patient?.phone}</Typography>
+                        <Typography><strong>Address:</strong> {data?.patient?.address}</Typography>
                         <TableContainer>
                             <Table>
                                 <TableHead>

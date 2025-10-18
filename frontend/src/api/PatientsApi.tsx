@@ -10,6 +10,7 @@ export const GET_ALL_PATIENTS = gql`
             dob
             email
             phone
+            address
         }
     }
 `;
@@ -23,6 +24,7 @@ export const GET_PATIENT_BY_ID = gql`
             dob
             email
             phone
+            address
             appointments {
                 id
                 appointmentDate

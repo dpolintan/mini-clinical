@@ -31,6 +31,7 @@ class PatientType:
     dob: str
     email: str
     phone: str
+    address: str
 
     @strawberry.field
     def appointments(self) -> List[AppointmentType]:
@@ -56,7 +57,8 @@ class Query:
             last_name=p.last_name,
             dob=str(p.dob),
             email=p.email,
-            phone=p.phone
+            phone=p.phone,
+            address=p.address
         ) for p in patients]
     
     @strawberry.field
@@ -69,7 +71,8 @@ class Query:
                 last_name=p.last_name,
                 dob=str(p.dob),
                 email=p.email,
-                phone=p.phone
+                phone=p.phone,
+                address=p.address
             )
         return None
 
@@ -115,7 +118,8 @@ class Mutation:
                     last_name=row.get('last_name', ''),
                     dob=row.get('dob', '') if row.get('dob', '') else None,
                     email=row.get('email', ''),
-                    phone=row.get('phone', '')
+                    phone=row.get('phone', ''),
+                    address=row.get('address', '')
                 )
                 session.add(patient)
                 session.flush() 

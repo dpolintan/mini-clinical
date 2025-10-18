@@ -10,6 +10,7 @@ type Patient = {
     dob: string;
     email: string;
     phone: string;
+    address: string;
 };
 
 type GetAllPatientsData = {
@@ -32,6 +33,7 @@ const Patients: React.FC = () => {
                             <TableCell>Date of Birth</TableCell>
                             <TableCell>Email</TableCell>
                             <TableCell>Phone</TableCell>
+                            <TableCell>Address</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -43,6 +45,7 @@ const Patients: React.FC = () => {
                                 <TableCell>{patient.dob}</TableCell>
                                 <TableCell>{patient.email}</TableCell>
                                 <TableCell>{patient.phone}</TableCell>
+                                <TableCell>{patient.address}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

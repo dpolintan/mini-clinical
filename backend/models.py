@@ -13,6 +13,7 @@ class Patient(Base):
     dob = Column(String)
     email = Column(String, index=True)
     phone = Column(String, index=True)
+    address = Column(String, index=True)
     appointments = relationship("Appointment", back_populates="patient")
 
 class Appointment(Base):
