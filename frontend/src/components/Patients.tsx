@@ -77,7 +77,7 @@ const Patients: React.FC = () => {
                     {data?.patients?.map((patient) => (
                         <TableRow 
                             key={patient.id} 
-                            onClick={() => navigate(`/patients/${patient.id}`)} 
+                            onClick={() => navigate(`/${patient.id}`)} 
                             style={{ cursor: 'pointer' }}
                             hover
                         >
