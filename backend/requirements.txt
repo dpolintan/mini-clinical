@@ -1,8 +1,6 @@
-fastapi
-strawberry-graphql[fastapi]
-strawberry
+fastapi[standard]
+strawberry-graphql
 sqlalchemy
 pandas
 python-dateutil
-email-validator
-phonenumbers
+uvicorn[standard]

@@ -1,17 +1,28 @@
+import os
 import pandas as pd
 from dateutil import parser
+from io import StringIO
 
 def ingest_csv(file_path):
-    df = pd.read_csv(
-        file_path,
-        on_bad_lines='skip'
-    )
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+    
+    cleaned_lines = []
+    for line in lines:
+        cleaned_line = line.strip().rstrip(',')
+        cleaned_lines.append(cleaned_line)
+    
+    cleaned_csv_data = '\n'.join(cleaned_lines)
+    
+    
+    df = pd.read_csv(StringIO(cleaned_csv_data))
 
     print(df)
 
     for name_col in ['first_name', 'last_name']:
         if name_col in df.columns:
-            df[name_col] = df[name_col].astype(str).str.strip().str.title()
+            df[name_col] = df[name_col].fillna('').astype(str).str.strip().str.title()
+            df[name_col] = df[name_col].replace('Nan', '')
 
     for date_col in ['dob', 'appointment_date']:
         if date_col in df.columns:
@@ -41,10 +52,16 @@ def ingest_csv(file_path):
         df.loc[df['phone'].str.len() != 10, 'phone'] = pd.NA
         df.loc[df['phone'].notna(), 'phone'] = df.loc[df['phone'].notna(), 'phone'].apply(lambda x: f'+1{x}')
 
-    df = df.fillna('')
+
     df = df.replace(['<NA>', 'NaN', 'NaT', pd.NA, None], '')
 
+    print(df)
     return df
+
+
+file_path = os.path.join(os.path.dirname(__file__), "patients_and_appointments.txt")
+if __name__ == "__main__":
+    ingest_csv(file_path)
 
 
 

@@ -105,16 +105,12 @@ class Mutation:
         df = get_patient_raw()  
     
         for _, row in df.iterrows():
-            # Find or create patient
-            patient = session.query(Patient).filter_by(
-                first_name=row.get('first_name', ''),
-                last_name=row.get('last_name', ''),
-                dob=row.get('dob', '') if row.get('dob', '') else None,
-                email=row.get('email', ''),
-                phone=row.get('phone', '')
-            ).first()
+            patient_id = int(row.get('patient_id', 0))
+            
+            patient = session.query(Patient).filter_by(id=patient_id).first()
             if not patient:
                 patient = Patient(
+                    id=patient_id,
                     first_name=row.get('first_name', ''),
                     last_name=row.get('last_name', ''),
                     dob=row.get('dob', '') if row.get('dob', '') else None,
@@ -124,13 +120,18 @@ class Mutation:
                 session.add(patient)
                 session.flush() 
 
-            if 'appointment_date' in row and row['appointment_date']:
-                appointment = Appointment(
-                    patient_id=patient.id,
-                    appointment_date=row['appointment_date'],
-                    appointment_type=row['appointment_type'] if 'appointment_type' in row else ''
-                )
-                session.add(appointment)
+            if 'appointment_date' in row and row['appointment_date'] and 'appointment_id' in row and row['appointment_id']:
+                appointment_id = int(row.get('appointment_id', 0))
+
+                existing_appointment = session.query(Appointment).filter_by(id=appointment_id).first()
+                if not existing_appointment:
+                    appointment = Appointment(
+                        id=appointment_id,
+                        patient_id=patient_id,
+                        appointment_date=row['appointment_date'],
+                        appointment_type=row['appointment_type'] if 'appointment_type' in row else ''
+                    )
+                    session.add(appointment)
 
         session.commit()
         session.close()

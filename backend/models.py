@@ -7,7 +7,7 @@ class Base(DeclarativeBase):
 
 class Patient(Base):
     __tablename__ = 'patients'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=False)
     first_name = Column(String, index=True)
     last_name = Column(String, index=True)
     dob = Column(String)
@@ -17,7 +17,7 @@ class Patient(Base):
 
 class Appointment(Base):
     __tablename__ = 'appointments'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=False)
     patient_id = Column(Integer, ForeignKey('patients.id'), index=True)
     appointment_date = Column(String, index=True)
     appointment_type = Column(String)
