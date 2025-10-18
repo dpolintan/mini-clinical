@@ -29,13 +29,13 @@ def ingest_csv(file_path):
             def parse_date(val):
                 try:
                     val = str(val).replace('/', '-')
-                    return parser.parse(val, dayfirst=False).date()
+                    parsed_date = parser.parse(val, dayfirst=False)
+                    # Return date for both dob and appointment_date
+                    return parsed_date.date()
                 except Exception:
                     return pd.NaT
 
             df[date_col] = df[date_col].apply(parse_date)
-         
-            df[date_col] = df[date_col].astype(str)
 
     df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 

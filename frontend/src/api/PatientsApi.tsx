@@ -5,8 +5,8 @@ export const GET_ALL_PATIENTS = gql`
     query GetAllPatients {
         patients {
             id
-            firstName
-            lastName
+            first_name
+            last_name
             dob
             email
             phone
@@ -19,16 +19,16 @@ export const GET_PATIENT_BY_ID = gql`
     query GetPatientById($id: Int!) {
         patient(id: $id) {
             id
-            firstName
-            lastName
+            first_name
+            last_name
             dob
             email
             phone
             address
             appointments {
                 id
-                appointmentDate
-                appointmentType
+                appointment_date
+                appointment_type
             }
         }
     }

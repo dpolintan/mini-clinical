@@ -21,14 +21,14 @@ const Appointments: React.FC = () => {
 
     interface Appointment {
         id: string;
-        appointmentDate: string;
-        appointmentType: string;
+        appointment_date: string;
+        appointment_type: string;
     }
 
     interface Patient {
         id: string;
-        firstName: string;
-        lastName: string;
+        first_name: string;
+        last_name: string;
         dob: string;
         email: string;
         phone: string;
@@ -88,7 +88,7 @@ const Appointments: React.FC = () => {
             </Typography>
             <Box sx={{ mb: 3 }}>
                 <Typography><strong>ID:</strong> {data.patient.id}</Typography>
-                <Typography><strong>Name:</strong> {data.patient.firstName} {data.patient.lastName}</Typography>
+                <Typography><strong>Name:</strong> {data.patient.first_name} {data.patient.last_name}</Typography>
                 <Typography><strong>Date of Birth:</strong> {data.patient.dob}</Typography>
                 <Typography><strong>Email:</strong> {data.patient.email}</Typography>
                 <Typography><strong>Phone:</strong> {data.patient.phone}</Typography>
@@ -113,8 +113,8 @@ const Appointments: React.FC = () => {
                             {data?.patient?.appointments?.map((appointment) => (
                                 <TableRow key={appointment.id}>
                                     <TableCell>{appointment.id}</TableCell>
-                                    <TableCell>{appointment.appointmentDate}</TableCell>
-                                    <TableCell>{appointment.appointmentType}</TableCell>
+                                    <TableCell>{appointment.appointment_date}</TableCell>
+                                    <TableCell>{appointment.appointment_type}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

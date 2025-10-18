@@ -1,6 +1,5 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, create_engine
 from sqlalchemy.orm import relationship, DeclarativeBase
-from sqlalchemy import create_engine
 
 class Base(DeclarativeBase):
     pass
@@ -10,7 +9,7 @@ class Patient(Base):
     id = Column(Integer, primary_key=True, autoincrement=False)
     first_name = Column(String, index=True)
     last_name = Column(String, index=True)
-    dob = Column(String)
+    dob = Column(Date)  e
     email = Column(String, index=True)
     phone = Column(String, index=True)
     address = Column(String, index=True)
@@ -20,7 +19,7 @@ class Appointment(Base):
     __tablename__ = 'appointments'
     id = Column(Integer, primary_key=True, autoincrement=False)
     patient_id = Column(Integer, ForeignKey('patients.id'), index=True)
-    appointment_date = Column(String, index=True)
+    appointment_date = Column(Date, index=True)  
     appointment_type = Column(String)
     patient = relationship("Patient", back_populates="appointments")
 

@@ -1,6 +1,8 @@
 import os
 import strawberry
+import pandas as pd
 from typing import List, Optional
+from datetime import date
 from models import Patient, Appointment, engine
 from ingest import ingest_csv
 from sqlalchemy.orm import sessionmaker
@@ -30,14 +32,14 @@ def get_patient_raw() -> List[str]:
 class AppointmentType:
     id: int
     patient_id: int
-    appointment_date: str
+    appointment_date: date
     appointment_type: str
 
 def create_appointment_type(appointment) -> AppointmentType:
     return AppointmentType(
         id=appointment.id,
         patient_id=appointment.patient_id,
-        appointment_date=str(appointment.appointment_date),
+        appointment_date=appointment.appointment_date,
         appointment_type=appointment.appointment_type
     )
 
@@ -46,7 +48,7 @@ def create_patient_type(patient) -> PatientType:
         id=patient.id,
         first_name=patient.first_name,
         last_name=patient.last_name,
-        dob=str(patient.dob),
+        dob=patient.dob,
         email=patient.email,
         phone=patient.phone,
         address=patient.address
@@ -57,14 +59,13 @@ class PatientType:
     id: int
     first_name: str
     last_name: str
-    dob: str
+    dob: date
     email: str
     phone: str
     address: str
 
     @strawberry.field
     def appointments(self) -> List[AppointmentType]:
-        from models import Appointment  # avoid circular import
         with get_db_session() as session:
             appointments = session.query(Appointment).filter(Appointment.patient_id == self.id).all()
             return [create_appointment_type(a) for a in appointments]
@@ -120,7 +121,7 @@ class Mutation:
                         id=patient_id,
                         first_name=row.get('first_name', ''),
                         last_name=row.get('last_name', ''),
-                        dob=row.get('dob', '') if row.get('dob', '') else None,
+                        dob=row.get('dob') if pd.notna(row.get('dob')) else None,
                         email=row.get('email', ''),
                         phone=row.get('phone', ''),
                         address=row.get('address', '')

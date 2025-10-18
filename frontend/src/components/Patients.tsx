@@ -16,8 +16,8 @@ import { useNavigate } from 'react-router-dom';
 
 type Patient = {
     id: string;
-    firstName: string;
-    lastName: string;
+    first_name: string;
+    last_name: string;
     dob: string;
     email: string;
     phone: string;
@@ -82,8 +82,8 @@ const Patients: React.FC = () => {
                             hover
                         >
                             <TableCell>{patient.id}</TableCell>
-                            <TableCell>{patient.firstName}</TableCell>
-                            <TableCell>{patient.lastName}</TableCell>
+                            <TableCell>{patient.first_name}</TableCell>
+                            <TableCell>{patient.last_name}</TableCell>
                             <TableCell>{patient.dob}</TableCell>
                             <TableCell>{patient.email}</TableCell>
                             <TableCell>{patient.phone}</TableCell>
