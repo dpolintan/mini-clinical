@@ -10,7 +10,6 @@ Session = sessionmaker(bind=engine)
 
 @contextmanager
 def get_db_session():
-    """Context manager for database sessions with proper cleanup"""
     session = Session()
     try:
         yield session
@@ -34,6 +33,25 @@ class AppointmentType:
     appointment_date: str
     appointment_type: str
 
+def create_appointment_type(appointment) -> AppointmentType:
+    return AppointmentType(
+        id=appointment.id,
+        patient_id=appointment.patient_id,
+        appointment_date=str(appointment.appointment_date),
+        appointment_type=appointment.appointment_type
+    )
+
+def create_patient_type(patient) -> PatientType:
+    return PatientType(
+        id=patient.id,
+        first_name=patient.first_name,
+        last_name=patient.last_name,
+        dob=str(patient.dob),
+        email=patient.email,
+        phone=patient.phone,
+        address=patient.address
+    )
+
 @strawberry.type
 class PatientType:
     id: int
@@ -48,15 +66,8 @@ class PatientType:
     def appointments(self) -> List[AppointmentType]:
         from models import Appointment  # avoid circular import
         with get_db_session() as session:
-            return [
-                AppointmentType(
-                    id=a.id,
-                    patient_id=a.patient_id,
-                    appointment_date=str(a.appointment_date),
-                    appointment_type=a.appointment_type
-                )
-                for a in session.query(Appointment).filter(Appointment.patient_id == self.id).all()
-            ]
+            appointments = session.query(Appointment).filter(Appointment.patient_id == self.id).all()
+            return [create_appointment_type(a) for a in appointments]
     
 @strawberry.type
 class Query: 
@@ -64,15 +75,7 @@ class Query:
     def patients(self) -> List[PatientType]:
         with get_db_session() as session:
             patients = session.query(Patient).all()
-            return [PatientType(
-                id=p.id,
-                first_name=p.first_name,
-                last_name=p.last_name,
-                dob=str(p.dob),
-                email=p.email,
-                phone=p.phone,
-                address=p.address
-            ) for p in patients]
+            return [create_patient_type(p) for p in patients]
     
     @strawberry.field
     def patient(self, id: int) -> Optional[PatientType]:
@@ -82,27 +85,14 @@ class Query:
         with get_db_session() as session:
             p = session.query(Patient).filter(Patient.id == id).first()
             if p:
-                return PatientType(
-                    id=p.id,
-                    first_name=p.first_name,
-                    last_name=p.last_name,
-                    dob=str(p.dob),
-                    email=p.email,
-                    phone=p.phone,
-                    address=p.address
-                )
+                return create_patient_type(p)
             return None
 
     @strawberry.field
     def appointments_by_patient(self, patientId: int) -> List[AppointmentType]:
         with get_db_session() as session:
             appointments = session.query(Appointment).filter(Appointment.patient_id == patientId).all()
-            return [AppointmentType(
-                id=a.id,
-                patient_id=a.patient_id,
-                appointment_date=str(a.appointment_date),
-                appointment_type=a.appointment_type
-            ) for a in appointments]
+            return [create_appointment_type(a) for a in appointments]
     
     @strawberry.field
     def appointments(self, patientId: int = None) -> List[AppointmentType]:
@@ -111,12 +101,7 @@ class Query:
                 appointments = session.query(Appointment).filter(Appointment.patient_id == patientId).all()
             else:
                 appointments = session.query(Appointment).all()
-            return [AppointmentType(
-                id=a.id,
-                patient_id=a.patient_id,
-                appointment_date=str(a.appointment_date),
-                appointment_type=a.appointment_type
-            ) for a in appointments]
+            return [create_appointment_type(a) for a in appointments]
 
 
 @strawberry.type
