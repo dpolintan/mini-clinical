@@ -9,7 +9,7 @@ class Patient(Base):
     id = Column(Integer, primary_key=True, autoincrement=False)
     first_name = Column(String, index=True)
     last_name = Column(String, index=True)
-    dob = Column(Date)  e
+    dob = Column(Date) 
     email = Column(String, index=True)
     phone = Column(String, index=True)
     address = Column(String, index=True)
