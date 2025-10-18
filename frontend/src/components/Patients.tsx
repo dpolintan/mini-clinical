@@ -1,7 +1,18 @@
 import React from 'react';
 import { useQuery } from '@apollo/client/react';
 import { GET_ALL_PATIENTS } from '../api/PatientsApi';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { 
+    Table, 
+    TableBody, 
+    TableCell, 
+    TableContainer, 
+    TableHead, 
+    TableRow, 
+    CircularProgress, 
+    Alert,
+    Box 
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 type Patient = {
     id: string;
@@ -16,42 +27,72 @@ type Patient = {
 type GetAllPatientsData = {
     patients: Patient[];
 };
-
 const Patients: React.FC = () => {
-
+    const navigate = useNavigate();
     const { loading, error, data } = useQuery<GetAllPatientsData>(GET_ALL_PATIENTS);
-    if (data) console.log(data)
+
+    if (loading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (error) {
+        return (
+            <Box p={2}>
+                <Alert severity="error">
+                    Error loading patients: {error.message}
+                </Alert>
+            </Box>
+        );
+    }
+
+    if (!data?.patients?.length) {
+        return (
+            <Box p={2}>
+                <Alert severity="info">
+                    No patients found.
+                </Alert>
+            </Box>
+        );
+    }
+
     return (
-        <div>
-            <TableContainer>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>First Name</TableCell>
-                            <TableCell>Last Name</TableCell>
-                            <TableCell>Date of Birth</TableCell>
-                            <TableCell>Email</TableCell>
-                            <TableCell>Phone</TableCell>
-                            <TableCell>Address</TableCell>
+        <TableContainer>
+            <Table stickyHeader>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>ID</TableCell>
+                        <TableCell>First Name</TableCell>
+                        <TableCell>Last Name</TableCell>
+                        <TableCell>Date of Birth</TableCell>
+                        <TableCell>Email</TableCell>
+                        <TableCell>Phone</TableCell>
+                        <TableCell>Address</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {data?.patients?.map((patient) => (
+                        <TableRow 
+                            key={patient.id} 
+                            onClick={() => navigate(`/patients/${patient.id}`)} 
+                            style={{ cursor: 'pointer' }}
+                            hover
+                        >
+                            <TableCell>{patient.id}</TableCell>
+                            <TableCell>{patient.firstName}</TableCell>
+                            <TableCell>{patient.lastName}</TableCell>
+                            <TableCell>{patient.dob}</TableCell>
+                            <TableCell>{patient.email}</TableCell>
+                            <TableCell>{patient.phone}</TableCell>
+                            <TableCell>{patient.address}</TableCell>
                         </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {data && data.patients.map((patient: any) => (
-                            <TableRow key={patient.id} onClick={() => window.location.href = `/${patient.id}`} style={{ cursor: 'pointer' }}>
-                                <TableCell>{patient.id}</TableCell>
-                                <TableCell>{patient.firstName}</TableCell>
-                                <TableCell>{patient.lastName}</TableCell>
-                                <TableCell>{patient.dob}</TableCell>
-                                <TableCell>{patient.email}</TableCell>
-                                <TableCell>{patient.phone}</TableCell>
-                                <TableCell>{patient.address}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>   
-        </div>
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
     );
 };
 
