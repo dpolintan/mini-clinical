@@ -2,12 +2,6 @@
 
 A full-stack web application for managing patients and their appointments, built with FastAPI, GraphQL, React, and TypeScript.
 
-## 🏗️ Architecture
-
-- **Backend**: FastAPI + Strawberry GraphQL + SQLAlchemy + SQLite
-- **Frontend**: React + TypeScript + Apollo Client + Material-UI
-- **Database**: SQLite (with automatic schema creation)
-
 ## 📋 Prerequisites
 
 Before setting up the project, ensure you have the following installed:
@@ -64,31 +58,6 @@ npm start
 
 The frontend will be available at: http://localhost:3000
 
-## 📁 Project Structure
-
-```
-mini-clinical/
-├── backend/
-│   ├── server.py              # FastAPI application entry point
-│   ├── schema.py              # GraphQL schema and resolvers
-│   ├── models.py              # SQLAlchemy database models
-│   ├── ingest.py              # CSV data processing utilities
-│   ├── patients_and_appointments.txt  # Sample data file
-│   └── requirements.txt       # Python dependencies
-├── frontend/
-│   ├── src/
-│   │   ├── App.tsx           # Main application component
-│   │   ├── components/       # React components
-│   │   │   ├── Main.tsx      # Router configuration
-│   │   │   ├── Patients.tsx  # Patient list view
-│   │   │   └── Appointments.tsx  # Patient detail/appointments view
-│   │   └── api/
-│   │       └── PatientsApi.tsx  # GraphQL queries
-│   ├── package.json          # Node.js dependencies
-│   └── tsconfig.json         # TypeScript configuration
-├── queries.sql               # Database schema (reference)
-└── README.md                 # This file
-```
 
 ## 🗄️ Database
 
@@ -100,7 +69,7 @@ The application uses SQLite with automatic schema creation. On first run, the ba
 
 ### Sample Data
 
-To load sample data, you can use the mutation available in the GraphQL playground:
+To load sample data, you can use the mutation available in the GraphQL playground (http://127.0.0.1:8000/graphql):
 
 ```graphql
 mutation {
@@ -110,57 +79,44 @@ mutation {
 
 This will process the data from `patients_and_appointments.txt`.
 
-## 🔧 API Endpoints
-
-### GraphQL Queries
-
-**Get all patients:**
-```graphql
-query {
-  patients {
-    id
-    firstName
-    lastName
-    dob
-    email
-    phone
-  }
-}
-```
-
-**Get patient with appointments:**
-```graphql
-query GetPatient($id: Int!) {
-  patient(id: $id) {
-    id
-    firstName
-    lastName
-    dob
-    email
-    phone
-    appointments {
-      id
-      appointmentDate
-      appointmentType
-    }
-  }
-}
-```
-
-### REST Endpoints
-
-- **GraphQL Endpoint**: `POST /graphql`
-- **API Documentation**: `GET /docs`
-- **Health Check**: `GET /` (redirects to docs)
-
-
-## 📝 Environment Variables
-
-Create a `.env` file in the backend directory for configuration:
-
-```env
-DATABASE_URL=sqlite:///./patients.db
-CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
-DEBUG=true
-```
 ## Future Work 
+- **Enable upload files using the frontend**
+- **Futher data clean up**
+- **Enable table sorting and search functionality**
+- **Add table to view all appointments**
+- **Further normalize tables**
+
+## Data Modeling and Validation
+- Clean data by removing white spaces
+- Data having more than 10 rows will be removed
+- All data regardless of how many fields are empty will still be kept
+- Incorrect contact data will be removed - no guessing 
+- All empty or incorrect fields will be empty
+
+**First and Last Name**
+- First letter of name capitalized using `.str.title()` 
+- Leading/trailing whitespace removed with `.str.strip()`
+- If empty, leave blank (not NaN)
+
+**DOB and Appointment Date**
+- Multiple date formats automatically parsed using `dateutil.parser`:
+- Converts all dates to standardized Python `date` objects
+- Invalid dates (unparseable) set to empty/null
+
+**Email**
+- Converted to lowercase for consistency
+- Leading/trailing whitespace removed
+- Fixes common data entry errors: `[at]` → `@`
+- Validates against regex pattern: `^[\w\.\-']+@[\w\.-]+\.\w+$`
+- Invalid emails (missing domain, malformed) set to empty
+
+**Phone Number**
+- Removes all non-numeric characters using regex `\D`
+- Validates exactly 10 digits assuming US phone numbers
+- Adds "+1" country code prefix to valid numbers
+- Invalid lengths (6 digits, 11+ digits) set to empty
+
+**Address**
+- Preserves original formatting and punctuation
+- Only removes leading/trailing whitespace
+- Not heavily filtered to maintain address variety
