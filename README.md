@@ -30,7 +30,7 @@ python3 -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 # Install dependencies
-pip install "fastapi[standard]" strawberry-graphql sqlalchemy pandas python-dateutil
+pip install -r requirements.txt
 
 # Start the backend server
 python -m fastapi dev server.py
