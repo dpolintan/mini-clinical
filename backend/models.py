@@ -1,5 +1,9 @@
 from sqlalchemy import Column, Integer, String, Date, ForeignKey, create_engine
 from sqlalchemy.orm import relationship, DeclarativeBase
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class Base(DeclarativeBase):
     pass
@@ -23,5 +27,6 @@ class Appointment(Base):
     appointment_type = Column(String)
     patient = relationship("Patient", back_populates="appointments")
 
-engine = create_engine("sqlite:///patients.db", echo=True)
+database_url = os.getenv("DATABASE_URL", "sqlite:///./patients.db")
+engine = create_engine(database_url, echo=True)
 Base.metadata.create_all(engine)
