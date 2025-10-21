@@ -75,11 +75,21 @@ The application uses SQLite with automatic schema creation. On first run, the ba
 
 To load sample data, you can use the mutation available in the GraphQL playground (http://127.0.0.1:8000/graphql):
 
+To auto-populate using data within the system: 
 ```graphql
 mutation {
-  uploadCsv
+  populate_db
 }
 ```
+
+To upload using other file: 
+```graphql
+mutation {
+  uploadFile(filePath: "your-path-here")
+}
+```
+
+
 
 This will process the data from `patients_and_appointments.txt`.
 

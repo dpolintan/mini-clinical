@@ -108,7 +108,7 @@ class Query:
 @strawberry.type
 class Mutation:
     @strawberry.mutation
-    async def upload_csv(self) -> str:
+    async def populate_db(self) -> str:
         df = get_patient_raw()  
         
         with get_db_session() as session:
@@ -143,5 +143,58 @@ class Mutation:
                         session.add(appointment)
                         
         return "CSV uploaded and data stored successfully."
+    
+    @strawberry.mutation
+    async def upload_file(self, file_path: str) -> str:
+        print(f"Processing file: {file_path}")
+        
+        if not os.path.exists(file_path):
+            error_msg = f"File not found: {file_path}"
+            print(error_msg)
+            return error_msg
+        
+        try:
+            df = ingest_csv(file_path)
+            print(f"Successfully loaded {len(df)} rows from file")
+            
+            with get_db_session() as session:
+                for _, row in df.iterrows():
+                    patient_id = int(row.get('patient_id', 0))
+                    
+                    patient = session.query(Patient).filter_by(id=patient_id).first()
+                    if not patient:
+                        patient = Patient(
+                            id=patient_id,
+                            first_name=row.get('first_name', ''),
+                            last_name=row.get('last_name', ''),
+                            dob=row.get('dob') if pd.notna(row.get('dob')) else None,
+                            email=row.get('email', ''),
+                            phone=row.get('phone', ''),
+                            address=row.get('address', '')
+                        )
+                        session.add(patient)
+                        session.flush() 
+
+                    if 'appointment_date' in row and row['appointment_date'] and 'appointment_id' in row and row['appointment_id']:
+                        appointment_id = int(row.get('appointment_id', 0))
+
+                        existing_appointment = session.query(Appointment).filter_by(id=appointment_id).first()
+                        if not existing_appointment:
+                            appointment = Appointment(
+                                id=appointment_id,
+                                patient_id=patient_id,
+                                appointment_date=row['appointment_date'],
+                                appointment_type=row['appointment_type'] if 'appointment_type' in row else ''
+                            )
+                            session.add(appointment)
+            
+            success_msg = f"File {file_path} uploaded and data stored successfully."
+            print(success_msg)
+            return success_msg
+            
+        except Exception as e:
+            error_msg = f"Error processing file {file_path}: {str(e)}"
+            print(error_msg)
+            return error_msg
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)
