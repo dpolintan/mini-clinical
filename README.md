@@ -2,6 +2,10 @@
 
 A full-stack web application for managing patients and their appointments, built with FastAPI, GraphQL, React, and TypeScript.
 
+## Previews
+<img width="1394" height="819" alt="Screenshot 2025-10-20 at 8 45 14 PM" src="https://github.com/user-attachments/assets/edb9f69e-c56b-48b5-aee3-709c345270d7" />
+<img width="1410" height="818" alt="Screenshot 2025-10-20 at 8 45 58 PM" src="https://github.com/user-attachments/assets/8c83d106-a4d1-4242-a8cd-2b375ddd36b0" />
+
 ## 📋 Prerequisites
 
 Before setting up the project, ensure you have the following installed:
