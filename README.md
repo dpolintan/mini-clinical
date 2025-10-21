@@ -85,7 +85,7 @@ mutation {
 To upload using other file: 
 ```graphql
 mutation {
-  uploadFile(filePath: "your-path-here")
+  upload_file(filePath: "your-path-here")
 }
 ```
 
