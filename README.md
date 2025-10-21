@@ -81,6 +81,7 @@ mutation {
   populate_db
 }
 ```
+This will process the data from `patients_and_appointments.txt`.
 
 To upload using other file: 
 ```graphql
@@ -88,10 +89,6 @@ mutation {
   upload_file(filePath: "your-path-here")
 }
 ```
-
-
-
-This will process the data from `patients_and_appointments.txt`.
 
 ## Future Work 
 - **Enable upload files using the frontend**
